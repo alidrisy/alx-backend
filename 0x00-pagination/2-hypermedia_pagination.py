@@ -42,7 +42,7 @@ class Server:
         if end_idx > len(self.__dataset):
             return []
         return self.__dataset[start_idx:end_idx]
-    
+
     def get_hyper(self, page: int = 1, page_size: int = 10) -> Mapping:
         """returns a dictionary containing key-value pairs"""
         data = self.get_page(page, page_size)
