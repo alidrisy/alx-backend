@@ -17,20 +17,6 @@ class LRUCache(BaseCaching):
         super().__init__()
         self.lru_data = {}
 
-    def __pop(self, key):
-        """privet method to discard the least recently used item """
-        k = ''
-        i = 0
-        for ke, val in self.lru_data.items():
-            if i == 0:
-                k = ke
-            if self.lru_data[k] > val:
-                k = ke
-            i += 1
-        print("DISCARD:", k)
-        self.lru_data.pop(k)
-        self.cache_data.pop(k)
-
     def put(self, key, item):
         """ Add an item in the cache
         """
@@ -38,7 +24,10 @@ class LRUCache(BaseCaching):
             return
         self.cache_data[key] = item
         if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-            self.__pop(key)
+            k = min(self.lru_data, key=self.lru_data.get)
+            print("DISCARD:", k)
+            self.lru_data.pop(k)
+            self.cache_data.pop(k)
         self.lru_data[key] = datetime.now()
 
     def get(self, key):
