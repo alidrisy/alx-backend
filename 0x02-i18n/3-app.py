@@ -15,6 +15,7 @@ class Config(object):
 
 app.config.from_object(Config)
 babel = Babel(app)
+babel = Babel(app)
 
 
 @babel.localeselector
@@ -26,7 +27,7 @@ def get_locale():
 @app.route('/', strict_slashes=False)
 def index() -> str:
     """main route for our app"""
-    return render_template("2-index.html")
+    return render_template("3-index.html")
 
 
 if __name__ == "__main__":
