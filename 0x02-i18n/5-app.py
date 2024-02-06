@@ -28,15 +28,13 @@ babel = Babel(app)
 
 def get_user(id: Union[str, None]) -> Union[Dict, None]:
     """find a user if any"""
-    return users.get(int(id))
+    return users.get(int(id), 0)
 
 
 @app.before_request
 def before_request():
     """a user login system"""
-    login_as = request.args.get('login_as')
-    if login_as in users:
-        setattr(g, "user", get_user(login_as))
+    setattr(g, 'user', get_user(request.args.get('login_as', 0)))
 
 
 @babel.localeselector
