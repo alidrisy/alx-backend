@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """ A basic Flask app """
 from flask import Flask, render_template, request, g
-from flask_babel import Babel
+from flask_babel import Babel, format_datetime
 from typing import Dict, Union
+import pytz
 
 app = Flask(__name__)
 
@@ -37,13 +38,27 @@ def before_request():
     setattr(g, 'user', get_user(request.args.get('login_as', 0)))
 
 
+@babel.timezoneselector
+def get_timezone() -> str:
+    """
+    Gets timezone from request object
+    """
+    tz = request.args.get('timezone', '').strip()
+    if not tz and g.user:
+        tz = g.user['timezone']
+    try:
+        return pytz.timezone(tz).zone
+    except pytz.exceptions.UnknownTimeZoneError:
+        return app.config['BABEL_DEFAULT_TIMEZONE']
+
+
 @babel.localeselector
 def get_locale() -> str:
     """determine the best match with our supported languages."""
-    locale = request.args.get('locale', '')
+    locale = request.args.get('locale')
     if locale in Config.LANGUAGES:
         return locale
-    if g.user:
+    if g.user and g.user["locale"] in Config.LANGUAGES:
         return g.user["locale"]
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
@@ -51,7 +66,8 @@ def get_locale() -> str:
 @app.route('/', strict_slashes=False)
 def index() -> str:
     """main route for our app"""
-    return render_template("6-index.html")
+    g.time = format_datetime()
+    return render_template("index.html")
 
 
 if __name__ == "__main__":

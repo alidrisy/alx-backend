@@ -3,6 +3,7 @@
 from flask import Flask, render_template, request, g
 from flask_babel import Babel
 from typing import Dict, Union
+import pytz
 
 app = Flask(__name__)
 
@@ -57,7 +58,7 @@ def get_locale() -> str:
     locale = request.args.get('locale')
     if locale in Config.LANGUAGES:
         return locale
-    if g.user:
+    if g.user and g.user["locale"] in Config.LANGUAGES:
         return g.user["locale"]
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
@@ -65,7 +66,7 @@ def get_locale() -> str:
 @app.route('/', strict_slashes=False)
 def index() -> str:
     """main route for our app"""
-    return render_template("6-index.html")
+    return render_template("7-index.html")
 
 
 if __name__ == "__main__":
