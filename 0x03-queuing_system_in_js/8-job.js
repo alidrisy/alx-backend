@@ -1,5 +1,5 @@
 const createPushNotificationsJobs = (jobs, queue) => {
-  if (!jobs instanceof Array) {
+  if (!(jobs instanceof Array)) {
     throw Error('Jobs is not an array');
   } else {
     jobs.forEach(job => {
